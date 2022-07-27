@@ -1,0 +1,413 @@
+import java.util.HashSet;
+import java.util.Set;
+
+public class SetExample {
+
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+
+        Set<String> hs = new HashSet<>();
+        hs.add("India");
+        hs.add("Japan");
+        hs.add("China");
+        hs.add("India");
+    //    hs.add(null);
+        System.out.println(hs);
+
+    }
+
+}
+*******************************************************
+public class Employee implements Comparable<Employee>{
+    String name;
+    String dept;
+    String desg;
+    public Employee() {
+
+    }
+
+    public Employee(String name, String dept, String desg) {
+        super();
+        this.name = name;
+        this.dept = dept;
+        this.desg = desg;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getDept() {
+        return dept;
+    }
+    public void setDept(String dept) {
+        this.dept = dept;
+    }
+    public String getDesg() {
+        return desg;
+    }
+    public void setDesg(String desg) {
+        this.desg = desg;
+    }
+
+    @Override
+    public String toString() {
+        return "name=" + name + ", dept=" + dept + ", desg=" + desg ;
+    }
+
+    @Override
+    public int compareTo(Employee o) {
+        // TODO Auto-generated method stub
+        return this.desg.compareTo(o.getDesg());
+    }
+
+}
+******************************************************
+import java.util.Set;
+import java.util.TreeSet;
+
+public class TreeSetEmployeeExample {
+
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+        Employee emp1 = new Employee("praveen","finance","mangaer");
+        Employee emp2 = new Employee("kumar","quality","lead");
+        Employee emp3 = new Employee("sunil","marketing","executive");
+        Set<Employee> hs = new TreeSet<>();
+        hs.add(emp1);
+        hs.add(emp2);
+        hs.add(emp3);
+        for(Employee e: hs)
+        System.out.println(e);
+
+    }
+
+}
+
+****************************************************************
+public class Student{
+
+    int htno;
+    String name;
+    Student(){
+
+    }
+    public Student(int htno, String name) {
+        super();
+        this.htno = htno;
+        this.name = name;
+    }
+
+    public int getHtno() {
+        return htno;
+    }
+    public void setHtno(int htno) {
+        this.htno = htno;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Student [htno=" + htno + ", name=" + name + "]";
+    }
+
+}
+
+*******************************************************************
+import java.util.Comparator;
+import java.util.TreeSet;
+
+class StudentHtnoComparator implements Comparator<Student>{
+
+    @Override
+    public int compare(Student o1, Student o2) {
+        // TODO Auto-generated method stub
+        return o1.getHtno()- o2.getHtno();
+    }
+
+}
+
+class StudentNameComparator implements Comparator<Student>{
+
+    @Override
+    public int compare(Student o1, Student o2) {
+        // TODO Auto-generated method stub
+        return o1.getName().compareTo(o2.getName());
+    }
+
+}
+
+public class StudentTreeSetExample {
+
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+
+        Comparator<Student> c1 = (s1,s2)-> s1.getHtno()-s2.getHtno();
+        Comparator<Student> c2 =(s1,s2)->s1.getName().compareTo(s2.getName());
+
+        Student s1 = new Student(1001,"sunil");
+        Student s2 = new Student(3002,"praveen");
+        StudentNameComparator ns = new StudentNameComparator();
+        StudentHtnoComparator hts = new  StudentHtnoComparator();
+
+        TreeSet<Student> ts1 = new TreeSet<Student>(c1);
+        ts1.add(s1);
+        ts1.add(s2);
+        System.out.println(ts1);
+
+        TreeSet<Student> ts2 = new TreeSet<>(c2);
+        ts2.add(s1);
+        ts2.add(s2);
+        System.out.println(ts2);
+
+    }
+
+}
+
+**********************************************************
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+public class MapExample {
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+        HashMap<String,String> hmap = new HashMap();
+        hmap.put("KA", "Karnataka");
+        hmap.put("TS", "Telengana");
+        hmap.put("TN", "Tamilnadu");
+        hmap.put("MH", "Maharastra");
+        hmap.put("AP", "Andhra Pradesh");
+        System.out.println(hmap);
+        hmap.putIfAbsent("MP", "Madhya Pradesh");
+        System.out.println(hmap);
+        System.out.println(hmap.get("TS"));
+        if(hmap.containsKey("TS"))
+            System.out.println("key avaialble");
+        else
+            System.out.println("key not available");
+        if(hmap.containsValue("Telengana"))
+            System.out.println("value avaialble");
+        else
+            System.out.println("value not available");
+        Set keys = hmap.keySet();
+        System.out.println(keys);
+        System.out.println(hmap.values());
+        Set<Map.Entry<String,String>> entries = hmap.entrySet();
+        for(Map.Entry<String, String> state: entries) {
+            System.out.println(state.getKey()+" --->  "+state.getValue());
+        }
+    }
+}
+
+********************************************************************************************
+[12:04 PM] Praveen Kumar  G S
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+public class StudentResultExample {
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+        Map<Student, List> data = new HashMap<>();
+        Student s1 = new Student(1001, "praveen");
+        Student s2 = new Student(2002, "kiran");
+        List<Integer> s1marks = new ArrayList<>();
+        List<Integer> s2marks = new ArrayList<>();
+        s1marks.add(80);
+        s1marks.add(75);
+        s1marks.add(75);
+        s2marks.add(68);
+        s2marks.add(59);
+        s2marks.add(64);
+        data.put(s1, s1marks);
+        data.put(s2, s2marks);
+        // System.out.println(data);
+        Set<Entry<Student, List>> entries = data.entrySet();
+        for (Map.Entry<Student, List> state : entries) {
+            Student s = state.getKey();
+            List<Integer> l = state.getValue();
+            int sum = 0;
+            for (int x : l)
+                sum = sum + x;
+            System.out.println("Htno  :" + s.getHtno() + " Name :  " + s.getName() + " Marks =  " + state.getValue()
+                    + "Total " + sum);
+        }
+    }
+}
+
+********************************************************************************************************
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+public class StreamExample2 {
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+        ArrayList<Integer> nos = new ArrayList<>();
+        nos.add(10);
+        nos.add(22);
+        nos.add(5);
+        nos.add(17);
+        nos.add(18);
+        List<String> names = new ArrayList<>();
+        names.add("praveen");
+        names.add("kumar");
+        names.add("sai");
+        names.add("anil");
+        Stream s = nos.stream();
+        Predicate<Integer> p = x->x%2==0;
+        Function<Integer,Integer> f = x->x+10;
+    //    s.filter(p).forEach(System.out::println);
+        s.map(f).forEach(System.out::println);
+        List<Integer> l2 = nos.stream()
+                              .filter(i -> i%2==0)
+                              .collect(Collectors.toList());
+        System.out.println(l2);
+        List<Integer> l3 =nos.stream()
+                            .map(f)
+                            .collect(Collectors.toList());
+        System.out.println(l3);
+        List<String> l4 =names.stream().map(str->str.toUpperCase())
+                    //names.stream().filter(str->str.length()>4)
+                    //.forEach(System.out::println);
+                      .collect(Collectors.toList());
+        System.out.println(l4);
+    }
+}
+****************************************************************************************************
+[2:50 PM] Praveen Kumar  G S
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+public class StreamExample2 {
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+        ArrayList<Integer> nos = new ArrayList<>();
+        nos.add(10);
+        nos.add(22);
+        nos.add(5);
+        nos.add(17);
+        nos.add(18);
+        List<String> names = new ArrayList<>();
+        names.add("praveen");
+        names.add("kumar");
+        names.add("sai");
+        names.add("anil");
+        Stream s = nos.stream();
+        Predicate<Integer> p = x->x%2==0;
+        Function<Integer,Integer> f = x->x+10;
+    //    s.filter(p).forEach(System.out::println);
+        s.map(f).forEach(System.out::println);
+        List<Integer> l2 = nos.stream()
+                              .filter(i -> i%2==0)
+                              .collect(Collectors.toList());
+        System.out.println(l2);
+        List<Integer> l3 =nos.stream()
+                            .map(f)
+                            .collect(Collectors.toList());
+        System.out.println(l3);
+        List<String> l4 =names.stream().map(str->str.toUpperCase())
+                    //names.stream().filter(str->str.length()>4)
+                    //.forEach(System.out::println);
+                      .collect(Collectors.toList());
+        System.out.println(l4);
+        long cnt = nos.stream()
+                  .filter(i -> i%2==0)
+                  .count();
+        System.out.println("Count after fileration: "+cnt);
+    }
+}
+
+**********************************************************************************************
+
+public class FisStudent {
+    int htno;
+    String name;
+    int total;
+    public FisStudent() {
+    }
+    public FisStudent(int htno, String name, int total) {
+        super();
+        this.htno = htno;
+        this.name = name;
+        this.total = total;
+    }
+    public int getHtno() {
+        return htno;
+    }
+    public void setHtno(int htno) {
+        this.htno = htno;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public int getTotal() {
+        return total;
+    }
+    public void setTotal(int total) {
+        this.total = total;
+    }
+    @Override
+    public String toString() {
+        return "FisStudent [htno=" + htno + ", name=" + name + ", total=" + total + "]";
+    }
+}
+************************************************************************************************
+[2:51 PM] Praveen Kumar  G S
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+public class StudentProcessingExample {
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+        FisStudent s1 = new FisStudent(1001, "praveen", 720);
+        FisStudent s2 = new FisStudent(1008, "sunil", 640);
+        FisStudent s3 = new FisStudent(1004, "anil", 550);
+        FisStudent s4 = new FisStudent(1003, "kishore", 320);
+        FisStudent s5 = new FisStudent(1005, "john", 490);
+        ArrayList<FisStudent> students = new ArrayList();
+        students.add(s1);
+        students.add(s2);
+        students.add(s3);
+        students.add(s4);
+        students.add(s5);
+        Predicate<FisStudent> p = s -> s.getTotal() > 500;
+        Comparator<FisStudent> c = (a, b) -> b.getTotal() - a.getTotal();
+        List<FisStudent> results = students.stream().filter(p).sorted(c).collect(Collectors.toList());
+        results.forEach(System.out::println);
+        FisStudent f1 = students.stream().filter(p).min(c).get();
+        FisStudent f2 = students.stream().filter(p).max(c).get();
+        System.out.println("The left most element: " + f1);
+        System.out.println("The right most element: " + f2);
+        Stream s = Stream.of(99, 999, 9999, 99999);
+        s.forEach(System.out::println);
+    }
+}
+
+
+
+
