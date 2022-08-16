@@ -1,63 +1,62 @@
-[12:49 PM] BhaskarSolanke, Anjali
-[11:48 AM] Praveen Kumar  G S
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+
+
 @Entity
-@Table(name="employee")
-public class Employee {        @Id    int empid;        @Column    String dept;        @Column    String desg;        @Column    String name;        public Employee() {            }        public Employee(int empid, String dept, String desg, String name) {        super();        this.empid = empid;        this.dept = dept;        this.desg = desg;        this.name = name;    }
+@Table(name="ssc")
+public class Ssc {
 
-    public int getEmpid() {        return empid;    } 
+@Id
+    int htno;
+    
+    @Column
+    String name;
+    
+    @Column
+    String city;
+    
+    @Column
+    String state;
 
-   public void setEmpid(int empid) {        this.empid = empid;    } 
+public Ssc() {
+        
+    }
+    
+    
+    public Ssc(int htno, String name, String city, String state) {
+        super();
+        this.htno = htno;
+        this.name = name;
+        this.city = city;
+        this.state = state;
+    }
 
-   public String getDept() {        return dept;    } 
-
-   public void setDept(String dept) {        this.dept = dept;    } 
-
-   public String getDesg() {        return desg;    } 
-
-   public void setDesg(String desg) {        this.desg = desg;    } 
-
-   public String getName() {        return name;    } 
-
-   public void setName(String name) {        this.name = name;    }         
+public int getHtno() {
+        return htno;
+    }
+    public void setHtno(int htno) {
+        this.htno = htno;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getCity() {
+        return city;
+    }
+    public void setCity(String city) {
+        this.city = city;
+    }
+    public String getState() {
+        return state;
+    }
+    public void setState(String state) {
+        this.state = state;
+    }
 
 }
-
-[11:48 AM] Praveen Kumar  G S
-@Repository
-public interface EmployeeRepository extends JpaRepository<Employee,Integer>{
-
-}
-
-[11:49 AM] Praveen Kumar  G S
-public interface EmployeeService {        public List<Employee> displayAllEmployees();    public Employee insertEmployee(Employee employee);
-
-}
-
-[11:49 AM] Praveen Kumar  G S
-
-@Service(value="jpa")
-public class EmployeeServiceImpl implements EmployeeService {            @Autowired    EmployeeRepository repo; 
-
-   @Override    public List<Employee> displayAllEmployees() {        // TODO Auto-generated method stub        return repo.findAll();    } 
-
-   @Override    public Employee insertEmployee(Employee employee) {        // TODO Auto-generated method stub        return repo.save(employee);    } 
-
-}
-
-[11:49 AM] Praveen Kumar  G S
-@RestController
-@RequestMapping("/employees")
-public class EmployeeController {        @Autowired    @Qualifier("jpa")    EmployeeService service;            @GetMapping("/all")    public ResponseEntity<List<Employee>> getAllEmps(){        List<Employee> emps = service.displayAllEmployees();        return new ResponseEntity<>(emps,HttpStatus.OK);    }        @PostMapping("/add")    public ResponseEntity<Employee> createEmployee(@RequestBody Employee emp){                return new ResponseEntity<>(service.insertEmployee(emp), HttpStatus.CREATED);    }
-
-}
-
-[11:50 AM] Praveen Kumar  G S
-spring.datasource.url=jdbc:h2:mem:javatpoint
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
-spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
-server.port=9099
-#enabling the H2 console
-spring.h2.console.enabled=true
-
