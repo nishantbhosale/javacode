@@ -1,0 +1,40 @@
+step1. Add the below code in the public static void main class of noteservice
+[3:27 PM] Praveen Kumar  G S
+@Bean    
+public RestTemplate getTemplate() {
+return new RestTemplate();    
+}
+
+Step 2> add the below code in noteserviceimpl class
+@Autowired
+RestTemplate template;
+
+[3:29 PM] Praveen Kumar  G S
+step3> Add the below code inthe NoteserviceImpl class
+[3:29 PM] Praveen Kumar  G S
+@Override    
+public List<CommentsDto> findCommentsForPid(int pid) {
+// TODO Auto-generated method stub                
+String url= "http://localhost:8082/comments/search/"+pid;        
+return template.getForObject(url, List.class);   
+}
+
+[3:29 PM] Praveen Kumar  G S
+step4> add the below abstract method in the NoteService interface
+
+[3:29 PM] Praveen Kumar  G S
+public List<CommentsDto> findCommentsForPid(int pid);
+
+
+[3:30 PM] Praveen Kumar  G S
+step5> add the below method in the NoteController class
+
+
+@GetMapping("/search/comments/{pid}")
+    public List<CommentsDto> getCommentsForPostId(@PathVariable("pid")int pid){
+        
+        return service.findCommentsForPid(pid);
+    }
+
+
+
