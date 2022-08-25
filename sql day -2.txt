@@ -1,0 +1,59 @@
+[10:22 AM] Praveen Kumar  G S
+SELECT ename, sal,
+CASE    when sal >=1000 and sal<=2000 then 'Low salary'    when sal >2000 and sal<=3000 then 'average salary'    when sal >=3000 and sal <4000 then 'high salary'    when sal >=4000 then 'extemely high'    ELSE "very low salary"
+END
+FROM emp;
+
+
+[10:22 AM] Praveen Kumar  G S
+CREATE TABLE gapemployees (    emp_no INT  AUTO_INCREMENT primary key,    first_name VARCHAR(50),    last_name VARCHAR(50)
+);
+
+INSERT INTO gapemployees(first_name,last_name) VALUES('John','Doe'),                                                      ('Mary','Jane');
+
+
+
+[10:24 AM] Praveen Kumar  G S
+CREATE TABLE events(  id int auto_increment primary key,   event_name varchar(255),   visitor varchar(255),   properties json,   browser json
+);
+
+
+
+[10:25 AM] Praveen Kumar  G S
+INSERT INTO fisevents  
+VALUES (  'pageview',    '1',   '{ "page": "/" }',   '{ "name": "Safari", "os": "Mac", "resolution": { "x": 1920, "y": 1080 } }'
+),
+('pageview',  '2',  '{ "page": "/contact" }',  '{ "name": "Firefox", "os": "Windows", "resolution": { "x": 2560, "y": 1600 } }'
+),
+(  'pageview',   '1',  '{ "page": "/products" }',  '{ "name": "Safari", "os": "Mac", "resolution": { "x": 1920, "y": 1080 } }'
+),
+(  'purchase',    '3',  '{ "amount": 200 }',  '{ "name": "Firefox", "os": "Windows", "resolution": { "x": 1600, "y": 900 } }'
+),
+(  'purchase',    '4',  '{ "amount": 150 }',  '{ "name": "Firefox", "os": "Windows", "resolution": { "x": 1280, "y": 800 } }'
+),
+(  'purchase',   '4',  '{ "amount": 500 }',  '{ "name": "Chrome", "os": "Windows", "resolution": { "x": 1680, "y": 1050 } }'
+);
+
+
+
+[10:25 AM] Praveen Kumar  G S
+SELECT id, browser->'$.name' browser FROM events;
+
+SELECT browser->>'$.name' browser,      count(browser)
+FROM events
+GROUP BY browser->>'$.name';
+
+
+[10:25 AM] Praveen Kumar  G S
+INSERT INTO table_name (column_list)
+VALUES    (value_list_1),    (value_list_2),    ...    (value_list_n);
+
+
+[10:25 AM] Praveen Kumar  G S
+INSERT INTO FISCUSTOMERS(CID,NAME,ADDRESS,PIN)
+VALUES
+(1005,'KISHORE','CHENNAI',600001),
+(1006,'MAHESH','MUMBAI',400003),
+(1007,'SURESH','DELHI',110001);
+
+
