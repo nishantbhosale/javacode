@@ -345,3 +345,28 @@ footer.sql
 SELECT CONTENT
 FROM DM_FOOTER
 WHERE NAME = :footer AND TENANT = :tenant
+*******************************************
+
+error
+
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.7.0:compile (default-compile) on project api: Compilation failure: Compilation failure:
+[ERROR] C:\Leo\workspaces\leo-workspace\migrationutilities\Utilities\Plugins\api\data\src\main\java\com\fis\ptd\plugin\api\reportSetup\footer\FooterRepository.java:[47,49] error: cannot find symbol
+[ERROR]   symbol:   variable content
+[ERROR]   location: class FooterRepository
+[ERROR] C:\Leo\workspaces\leo-workspace\migrationutilities\Utilities\Plugins\api\data\src\main\java\com\fis\ptd\plugin\api\trade\ws\TradeEntryPoint.java:[1541,41] error: method getDailyConfStatementConfirmationData in class TradeRepository cannot be applied to given types;
+[ERROR]   required: LocalDate,List<Long>,String,String,String,String
+[ERROR]   found: @javax.validation.constraints.NotNull LocalDate,@javax.validation.constraints.NotNull List<Long>,@javax.validation.constraints.NotNull String,@javax.validation.constraints.NotNull String,String
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] C:\Leo\workspaces\leo-workspace\migrationutilities\Utilities\Plugins\api\data\src\main\java\com\fis\ptd\plugin\api\trade\ws\TradeEntryPoint.java:[1542,31] error: method getDailyConfStatementConfirmationData in class TradeRepository cannot be applied to given types;
+[ERROR]   required: LocalDate,List<Long>,String,String,String,String
+[ERROR]   found: @javax.validation.constraints.NotNull LocalDate,@javax.validation.constraints.NotNull List<Long>,@javax.validation.constraints.NotNull String,@javax.validation.constraints.NotNull String,String
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] C:\Leo\workspaces\leo-workspace\migrationutilities\Utilities\Plugins\api\data\src\main\java\com\fis\ptd\plugin\api\trade\TradeRepository.java:[1304,46] error: cannot find symbol
+[ERROR]   symbol:   method footerRepository(String,String)
+[ERROR]   location: variable footerRepository of type FooterRepository
+[ERROR] C:\Leo\workspaces\leo-workspace\migrationutilities\Utilities\Plugins\api\data\src\main\java\com\fis\ptd\plugin\api\trade\TradeRepository.java:[1306,17] error: cannot find symbol
+[ERROR]   symbol:   method SetFooterNote(String)
+[ERROR]   location: variable r of type SDMTrade
+[ERROR] C:\Leo\workspaces\leo-workspace\migrationutilities\Utilities\Plugins\api\data\src\main\java\com\fis\ptd\plugin\api\trade\TradeRepository.java:[1309,17] error: cannot find symbol
+[ERROR]   symbol:   method SetFooterNote(String)
+[ERROR]   location: variable r of type SDMTrade
