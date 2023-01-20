@@ -1,0 +1,231 @@
+footerentrypoint
+
+package com.fis.ptd.plugin.api.reportSetup.footer.ws;
+
+import com.fis.ptd.logs.secure.Logger;
+import com.fis.ptd.logs.secure.LoggerFactory;
+import com.fis.ptd.mu.fwk.ws.annotation.Authorization;
+import com.fis.ptd.mu.fwk.ws.annotation.Output;
+import com.fis.ptd.mu.fwk.ws.annotation.PRD;
+import com.fis.ptd.mu.plugins.common.ws.WSTypes;
+import com.fis.ptd.plugin.api.common.CommonRepositoryConfig;
+
+import com.fis.ptd.plugin.api.common.exception.DataException;
+import com.fis.ptd.plugin.api.reportSetup.footer.FooterRepository;
+import com.fis.ptd.plugin.api.reportSetup.footer.model.FooterStatement;
+import java.sql.SQLException;
+import java.util.stream.Stream;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import java.io.IOException;
+import javax.ws.rs.core.MediaType;
+
+
+public class FooterEntryPoint {
+    private FooterRepository FooterRepository;
+    private FooterRepository FooterRepositorySimulation;
+    private String tenant;
+    private static Logger logger = LoggerFactory.getLogger(FooterEntryPoint.class);
+
+
+    public FooterEntryPoint(CommonRepositoryConfig config, CommonRepositoryConfig simulationConfig) throws IOException {
+        this.FooterRepository = new FooterRepository(config.getDs());
+        this.FooterRepositorySimulation = new FooterRepository(simulationConfig.getDs());
+    }
+
+    public void setTenant(String tenant) {
+        this.tenant = tenant;
+    }
+
+    @Authorization(entitlements = "IH_API_PUBLIC")
+    @POST
+    @Path("accountStatement")
+    @PRD(name = "Footer")
+    @Produces({WSTypes.TEXT_CSV})
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Output(
+            fields = {"content"},
+            output = {@Output.Field(name = "CONTENT", type = String.class)})
+    public Stream<FooterStatement> getFooterStatement(
+            @FormParam("footer") String footer, @FormParam("simulation") boolean simulation, @Context HttpServletRequest request)
+            throws DataException {
+        try {
+            //return this.FooterRepository.getFooterStatement(footer, tenant);
+            String wsPath = "accountStatement";
+            logger.debug("request received to WS {} for footer: {}", wsPath, footer);
+            long startTimeInMillis = System.currentTimeMillis();
+            Stream<FooterStatement> result = (simulation
+                    ? this.FooterRepositorySimulation.getFooterStatement(footer, tenant)
+                    : this.FooterRepository.getFooterStatement(footer, tenant));
+
+            long endTimeInMillis = System.currentTimeMillis();
+            logger.debug("response generated from WS {} for footer {}", wsPath, footer);
+            logger.debug("WS: {} returned response in {} ms for ", wsPath, (endTimeInMillis - startTimeInMillis));
+            return result;
+
+
+        } catch (SQLException e) {
+            throw new DataException("An error occurred", e);
+        }
+    }
+
+    @Authorization(entitlements = "IH_API_PUBLIC")
+    @POST
+    @Path("accountOwnerStatement")
+    @PRD(name = "Account Owner Statement")
+    @Produces({WSTypes.TEXT_CSV})
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Output(
+            fields = {"content"},
+            output = {@Output.Field(name = "content", type = String.class)})
+    public Stream<FooterStatement> getAccountOwnerStatement(
+            @FormParam("footer") String footer, @FormParam("simulation") boolean simulation, @Context HttpServletRequest request)
+            throws DataException {
+        try {
+            String wsPath = "footer/accountOwnerStatement";
+            logger.trace("request received to WS {} for footer: {}", wsPath, footer);
+            long startTimeInMillis = System.currentTimeMillis();
+
+            Stream<FooterStatement> result = (simulation
+                    ? this.FooterRepositorySimulation.getFooterStatement(footer, tenant)
+                    : this.FooterRepository.getFooterStatement(footer, tenant));
+
+            long endTimeInMillis = System.currentTimeMillis();
+            logger.trace("response generated from WS {} for footer {}", wsPath, footer);
+            logger.trace("WS: {} returned response in {} ms for ", wsPath, (endTimeInMillis - startTimeInMillis));
+            return result;
+        } catch (SQLException e) {
+            throw new DataException("An error occurred", e);
+        }
+    }
+
+    @POST
+    @Path("monthlyFooterStatement")
+    @PRD(name = "Monthly Account Statement - footer")
+    @Produces({WSTypes.TEXT_CSV})
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Output(fields = {"content"},
+            output = {@Output.Field(name = "content", type = String.class)})
+    public Stream<FooterStatement> getMonthlyFooterStatement(
+            @FormParam("footer") String footer, @Context HttpServletRequest request)
+            throws DataException {
+        try {
+            return this.FooterRepository.getFooterStatement(footer, tenant);
+        } catch (SQLException e) {
+            throw new DataException("An error occurred", e);
+        }
+    }
+
+    @Authorization(entitlements = "IH_API_PUBLIC")
+    @POST
+    @Path("counterpartyFooterStatement")
+    @PRD(name = "Counterparty Account Statement - footer")
+    @Produces({WSTypes.TEXT_CSV})
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Output(
+            fields = {"content"},
+            output = {@Output.Field(name = "content", type = String.class)})
+    public Stream<FooterStatement> getfooterCounterpartyFooterStatement(
+            @FormParam("footer") String footer,
+            @FormParam("simulation") boolean simulation,
+            @Context HttpServletRequest request)
+            throws DataException {
+        try {
+            String wsPath = "counterpartyFooterStatement";
+            logger.trace("request received to WS {} for footer: {}", wsPath, footer);
+            long startTimeInMillis = System.currentTimeMillis();
+
+            Stream<FooterStatement> result = (simulation
+                    ? this.FooterRepositorySimulation.getFooterStatement(footer, tenant)
+                    : this.FooterRepository.getFooterStatement(footer, tenant));
+
+            long endTimeInMillis = System.currentTimeMillis();
+            logger.trace("response generated from WS {} for footer {}", wsPath, footer);
+            logger.trace("WS: {} returned response in {} ms for ", wsPath, (endTimeInMillis - startTimeInMillis));
+            return result;
+
+        } catch (SQLException e) {
+            throw new DataException("An error occurred", e);
+        }
+    }
+}
+
+
+**************************************
+footer repository
+
+package com.fis.ptd.plugin.api.reportSetup.footer;
+
+import com.fis.ptd.ch.ds.FakeDataSource;
+import com.fis.cd.common.DBType;
+import com.fis.ptd.ih.fwk.datasource.MonitoringDataSource;
+import com.fis.ptd.ih.utils.sql.SQLQuery;
+import com.fis.ptd.ih.utils.sql.SQLStream;
+import com.fis.ptd.plugin.common.sql.SQLRepository;
+import com.fis.ptd.plugin.api.reportSetup.footer.model.FooterStatement;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
+import javax.sql.DataSource;
+
+public class FooterRepository {
+    private DataSource dataSource;
+    private SQLRepository repo;
+    private SQLStream sq;
+    private static final String SQL_RESOURCE_FOLDER = "reportSetup" + "/" + "footer";
+
+
+    @Deprecated
+    public FooterRepository(DataSource ds) throws IOException {
+        this(ds instanceof FakeDataSource ? DBType.POSTGRESQL : ((MonitoringDataSource)ds).getType(), ds);
+    }
+
+    public FooterRepository(DBType type, DataSource ds) throws IOException {
+        this.dataSource = ds;
+        this.repo = new SQLRepository(SQL_RESOURCE_FOLDER);
+        sq = new SQLStream(dataSource);
+    }
+
+    public Stream<FooterStatement> getFooterStatement(String footer, String tenant) throws SQLException {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("footer", footer);
+        map.put("tenant", tenant);
+        String query = repo.get("footer");
+        System.out.println("footer name "+footer);
+        return sq.toStream(
+                new SQLQuery(query, map),
+                rs -> {
+                    FooterStatement footerStatement = new FooterStatement();
+                    footerStatement.setContent(rs.getString("content"));
+                    System.out.println("footer content "+content);
+                    return footerStatement;
+                });
+    }
+}
+
+********************************************
+footerstatement
+package com.fis.ptd.plugin.api.reportSetup.footer.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+public class FooterStatement {
+    private String content;
+}
