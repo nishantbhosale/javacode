@@ -1,0 +1,32 @@
+{
+    "view": "lme",
+    "lme_legend": "yes",
+    "columns": [
+        {
+            "field": "Name",
+            "title": "Name"
+        },
+        {
+            "field": "Value",
+            "title": "Value"
+        }
+    ],
+    "footer": [
+        {
+            "columns": [
+                {
+                    "field": "default",
+                    "title": "Default"
+                },
+                {
+                    "field": "detailed",
+                    "title": "Detailed"
+                },
+                {
+                    "field": "full",
+                    "title": "Full"
+                }
+            ]
+        }
+    ]
+}
