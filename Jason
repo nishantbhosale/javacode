@@ -1,32 +1,430 @@
 {
-    "view": "lme",
-    "lme_legend": "yes",
-    "columns": [
-        {
-            "field": "Name",
-            "title": "Name"
+  "RSTemplate": [
+    {
+      "visible": true,
+      "jobClass": "com.fis.ptd.rs.jobs.ReportGeneratorJob",
+      "custom": false,
+      "name": "Daily Confirmation Statement",
+      "id": "CLIENT_STATEMENT_MERGED_API",
+      "storage": true,
+      "tag": "isDailyConfStmt, isBackOfficeReport",
+      "type": "CLIENT_REPORT",
+      "manualGenerate": false
+    }
+  ],
+  "RSTemplateDefinition": [
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "path": "rs/reports/clientReports/",
+      "engineParam": {
+        "joinedList": false,
+        "loopField": "inputIDs"
+      },
+      "file": {
+        "name": "ClientStatements_WS_mergedApi.prpt"
+      },
+      "engine": "EMBEDDED_PENTAHO",
+      "id": "PDF",
+      "fileFormat": "PDF"
+    }
+  ],
+  "RSTemplateParam": [
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "mapping": "account",
+      "set": "parameters",
+      "ui": 1,
+      "orderset": 1,
+      "skipHiddenParam": true,
+      "definition": {
+        "hidden": "REPORTING_LEVEL != 'account'",
+        "options": "name as name for (name, name)",
+        "id": "ACCOUNT_UI",
+        "type": "MONOSELLISTNUM",
+        "ws": {
+          "dataMethod": "GET",
+          "dataParams": {},
+          "dataSource": "/api/reporting/data/accounts"
         },
-        {
-            "field": "Value",
-            "title": "Value"
+        "mandatory": true
+      },
+      "backend": 0,
+      "id": "ACCOUNT_UI",
+      "order": 4
+    },
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "mapping": "account",
+      "set": "parameters",
+      "ui": 0,
+      "orderset": 1,
+      "skipHiddenParam": true,
+      "definition": {
+        "hidden": "HIERARCHY_LEVEL != 'BY_ACCOUNT'",
+        "options": "id as name for (id, name)",
+        "id": "ACCOUNT",
+        "type": "MULTISELLISTNUM",
+        "ws": {
+          "dataSource": "/api/reporting/data/accounts",
+          "dataMethod": "GET",
+          "dataParams": {}
+        },
+        "mandatory": "HIERARCHY_LEVEL == 'BY_ACCOUNT'"
+      },
+      "backend": 1,
+      "id": "ACCOUNT",
+      "order": 4
+    },
+
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "mapping": "accountOwner",
+      "set": "parameters",
+      "ui": 0,
+      "orderset": 1,
+      "skipHiddenParam": true,
+      "definition": {
+        "hidden": "HIERARCHY_LEVEL != 'BY_ACCOUNT_OWNERS'",
+        "options": "id as name for (id, name)",
+        "id": "ACCOUNT_OWNER",
+        "type": "MULTISELLISTNUM",
+        "ws": {
+          "dataParams": {},
+          "dataMethod": "GET",
+          "dataSource": "/api/reporting/data/accountowners"
+        },
+        "mandatory": "HIERARCHY_LEVEL == 'BY_ACCOUNT_OWNERS'"
+      },
+      "backend": 1,
+      "id": "ACCOUNT_OWNER",
+      "order": 4
+    },
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "mapping": "accountOwner",
+      "set": "parameters",
+      "ui": 1,
+      "orderset": 1,
+      "skipHiddenParam": true,
+      "definition": {
+        "hidden": "REPORTING_LEVEL != 'accountOwner'",
+        "options": "name as name for (name, name)",
+        "id": "ACCOUNT_OWNER_UI",
+        "type": "MONOSELLISTNUM",
+        "ws": {
+          "dataMethod": "GET",
+          "dataParams": {},
+          "dataSource": "/api/reporting/data/accountowners"
+        },
+        "mandatory": true
+      },
+      "backend": 0,
+      "id": "ACCOUNT_OWNER_UI",
+      "order": 4
+    },
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "mapping": "counterPartyAccount",
+      "set": "parameters",
+      "ui": 0,
+      "orderset": 1,
+      "skipHiddenParam": true,
+      "definition": {
+        "hidden": "HIERARCHY_LEVEL != 'BY_CCP_ACCOUNT'",
+        "options": "id as name for (id, name)",
+        "id": "COUNTERPARTY_ACCOUNT",
+        "type": "MULTISELLISTNUM",
+        "ws": {
+          "dataParams": {},
+          "dataMethod": "GET",
+          "dataSource": "/api/reporting/data/counterPartyAccount"
+        },
+        "mandatory": "HIERARCHY_LEVEL == 'BY_CCP_ACCOUNT'"
+      },
+      "backend": 1,
+      "id": "COUNTERPARTY_ACCOUNT",
+      "order": 4
+    },
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "mapping": "counterPartyAccount",
+      "set": "parameters",
+      "ui": 1,
+      "orderset": 1,
+      "skipHiddenParam": true,
+      "definition": {
+        "hidden": "REPORTING_LEVEL != 'counterPartyAccount'",
+        "options": "name as name for (name, name)",
+        "id": "COUNTERPARTY_ACCOUNT_UI",
+        "type": "MONOSELLISTNUM",
+        "ws": {
+          "dataMethod": "GET",
+          "dataParams": {},
+          "dataSource": "/api/reporting/data/counterPartyAccount"
+        },
+        "mandatory": true
+      },
+      "backend": 0,
+      "id": "COUNTERPARTY_ACCOUNT_UI",
+      "order": 4
+    },
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "mapping": "reportingLevel",
+      "set": "parameters",
+      "ui": 1,
+      "orderset": 1,
+      "skipHiddenParam": false,
+      "definition": {
+        "selectData": [
+            {
+                "value": "account",
+                "label": "Account"
+            },
+            {
+                "value": "accountOwner",
+                "label": "AccountOwner"
+            },
+            {
+                "value": "counterPartyAccount",
+                "label": "CounterPartyAccount"
+            }
+        ],
+        "id": "REPORTING_LEVEL",
+        "type": "MONOSELLISTNUM",
+        "mandatory": true
+      },
+      "backend": 1,
+      "id": "REPORTING_LEVEL",
+      "order": 0
+    },
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "mapping": "disclaimer",
+      "set": "parameters",
+      "ui": 0,
+      "orderset": 1,
+      "skipHiddenParam": false,
+      "definition": {
+        "options": "name as name for (name, name)",
+        "id": "DISCLAIMER",
+        "type": "MONOSELLISTNUM",
+        "ws": {
+          "dataSource": "/ch/ws/instance/{{instanceId}}/mdm/rsData/data/Disclaimer",
+          "dataMethod": "GET",
+          "dataParams": {}
+        },
+        "mandatory": true
+      },
+      "backend": 1,
+      "id": "DISCLAIMER",
+      "order": 5
+    },
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "mapping": "disclaimer",
+      "set": "parameters",
+      "ui": 1,
+      "orderset": 1,
+      "skipHiddenParam": false,
+      "definition": {
+        "options": "name as name for (name, name)",
+        "id": "DISCLAIMER_UI",
+        "type": "MONOSELLISTNUM",
+        "ws": {
+          "dataSource": "/api/reporting/data/disclaimer",
+          "dataMethod": "GET",
+          "dataParams": {}
+        },
+        "mandatory": true
+      },
+      "backend": 0,
+      "id": "DISCLAIMER_UI",
+      "order": 5
+    },
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "mapping": "format",
+      "set": "parameters",
+      "ui": 1,
+      "orderset": 1,
+      "skipHiddenParam": false,
+      "definition": {
+        "selectData": [
+          {
+            "value": "PDF",
+            "label": "PDF"
+          }
+        ],
+        "id": "FORMAT",
+        "type": "MONOSELLISTNUM",
+        "mandatory": true
+      },
+      "backend": 1,
+      "id": "FORMAT",
+      "order": 0
+    },
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "mapping": "hierarchyLevel",
+      "set": "parameters",
+      "ui": 0,
+      "orderset": 1,
+      "skipHiddenParam": false,
+      "definition": {
+        "id": "HIERARCHY_LEVEL",
+        "type": "MONOSELLISTNUM",
+        "ws": {
+            "dataParams": {
+                "reportingLevel": "REPORTING_LEVEL"
+            },
+            "dataMethod": "GET",
+            "dataSource": "/api/reporting/data/hierarchyLevels"
         }
-    ],
-    "footer": [
-        {
-            "columns": [
-                {
-                    "field": "default",
-                    "title": "Default"
-                },
-                {
-                    "field": "detailed",
-                    "title": "Detailed"
-                },
-                {
-                    "field": "full",
-                    "title": "Full"
-                }
-            ]
-        }
-    ]
+      },
+      "backend": 1,
+      "id": "HIERARCHY_LEVEL",
+      "order": 3
+    },
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "mapping": "parallelExec",
+      "set": "outputParameters",
+      "ui": 0,
+      "orderset": 0,
+      "skipHiddenParam": false,
+      "definition": {
+        "def": 1,
+        "id": "PARALLEL_EXECUTION",
+        "type": "INTEGER",
+        "mandatory": true
+      },
+      "backend": 1,
+      "id": "PARALLEL_EXECUTION",
+      "order": 3
+    },
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "mapping": "businessDate",
+      "set": "parameters",
+      "ui": 1,
+      "orderset": 1,
+      "skipHiddenParam": false,
+      "definition": {
+        "launchParam": true,
+        "id": "REPORT_DATE",
+        "type": "DATE"
+      },
+      "backend": 1,
+      "id": "REPORT_DATE",
+      "order": 2
+    },
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "mapping": "simulation",
+      "set": "parameters",
+      "ui": 0,
+      "orderset": 1,
+      "skipHiddenParam": false,
+      "definition": {
+        "def": false,
+        "id": "SIMULATION",
+        "type": "BOOLEAN"
+      },
+      "backend": 1,
+      "id": "SIMULATION",
+      "order": 1
+    },
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "mapping": "summary",
+      "set": "parameters",
+      "ui": 1,
+      "orderset": 1,
+      "skipHiddenParam": false,
+      "definition": {
+        "selectData": [
+          {
+            "label": "No summarization at all on the statements",
+            "value": "none"
+          },
+          {
+            "label": "Summarize Open Position and Life Cycle Events sections only",
+            "value": "partial"
+          },
+          {
+            "label": "Summarize All Sections of the Statement",
+            "value": "full"
+          }
+        ],
+        "id": "SUMMARIZATION",
+        "type": "MONOSELLISTNUM",
+        "mandatory": true
+      },
+      "backend": 1,
+      "id": "SUMMARIZATION",
+      "order": 6
+    },
+    {
+      "template": {
+        "id": "CLIENT_STATEMENT_MERGED_API"
+      },
+      "mapping": "lmeLegend",
+      "set": "parameters",
+      "ui": 0,
+      "orderset": 1,
+      "skipHiddenParam": false,
+      "definition": {
+        "selectData": [
+          {
+            "label": "Yes",
+            "value": "yes"
+          },
+          {
+            "label": "No",
+            "value": "no"
+          }
+        ],
+        "id": "LME LEGEND",
+        "type": "MONOSELLISTNUM",
+        "mandatory": true
+      },
+      "backend": 1,
+      "id": "LME_LEGEND",
+      "order": 7
+    }
+    
+  ]
 }
