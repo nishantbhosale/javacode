@@ -1,4 +1,34 @@
-AtomicBoolean showFooter = new AtomicBoolean(false);
+public Stream<SDMTrade> getDailyConfStatementConfirmationData(LocalDate businessDate, List<Long> inputIDs,
+			String summary, String reportingLevel, String runID, String lmeLegendDescLevel, String showLmeLegend) throws SQLException {
+		String queryFileName = "dailyConfStatement_confirmation_" + reportingLevel;
+        System.out.println("businessdate:"+businessDate);
+        System.out.println("input ids: "+inputIDs);
+        System.out.println("summery: "+summary);
+        System.out.println("reportting level: "+reportingLevel);
+        System.out.println("runid: "+runID);
+        System.out.println("level:"+lmeLegendDescLevel);
+        System.out.println("showlmelegend"+showLmeLegend);
+		
+		if("full".equals(summary)){
+			queryFileName = queryFileName + "_summary";
+		}
+		
+		Map<String, Object> params = new HashMap<>();
+		params.put("businessDate", businessDate);
+
+		String query = repo.get(queryFileName);
+		if (runID != null && !(runID.isEmpty() || runID.isBlank())) {
+			query = query.replace(":inputIDs", "select INPUTID from DS_INPUTIDS where ID = :runID");
+			params.put("runID", runID);
+		} else {
+			params.put("inputIDs", inputIDs);
+		}
+
+		if(!dbType.equals(DBType.ORACLE)){
+			List<SDMTrade> temp = new ArrayList<SDMTrade>();
+			return temp.stream();
+		}
+        AtomicBoolean showFooter = new AtomicBoolean(false);
 		return sq.toStream(new SQLQuery(SQLTransformer.transform(dbType, query), params), rs -> {
 			SDMTrade r = new SDMTrade();
 			r.setId(rs.getLong("tradeID"));
