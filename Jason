@@ -1,4 +1,4 @@
-Boolean showFooter = false;
+AtomicBoolean showFooter = new AtomicBoolean(false);
 		return sq.toStream(new SQLQuery(SQLTransformer.transform(dbType, query), params), rs -> {
 			SDMTrade r = new SDMTrade();
 			r.setId(rs.getLong("tradeID"));
@@ -89,7 +89,9 @@ Boolean showFooter = false;
 					.setSumExecutionCommissionAmountFee(rs.getBigDecimal("sumExecutionCommissionAmountFee").multiply(mulFactor))
 					.setSumClearingCommissionAmountFee(rs.getBigDecimal("sumClearingCommissionAmountFee").multiply(mulFactor))
 					.setSumBrokerCommissionAmountFee(rs.getBigDecimal("sumBrokerCommissionAmountFee").multiply(mulFactor));
-if(!"full".equals(summary))
+
+
+			 if(!"full".equals(summary))
              {
              	  String tradeTypeIds = rs.getString("trdTypes");
                    BusinessRepository businessRepo = new BusinessRepository(dbType, dataSource);
@@ -97,17 +99,17 @@ if(!"full".equals(summary))
                    String tradeTypes =Utils.getCommaSeperatedTradeTypes(businessRepo.getTradeTypeMap(), tradeTypeIds) ;
                    r.setTradeType(tradeTypes);
                  String note = "";
-                 if(!showFooter)
+                 if(!showFooter.get())
                  {
                      if("default".equals(lmeLegendDescLevel) && "yes".equals(showLmeLegend)){
                          if(rs.getString("ExchangeName").equals("XNYM6102")){
-                             showFooter = true;
+                             showFooter.set(true);
+                             System.out.println("before:"+showFooter.get());
                          }
                      }
                  }
-                 r.setShowLmeFooter(showFooter);
-
-                  if("full".equals(lmeLegendDescLevel) && "yes".equals(showLmeLegend)){
+                 r.setShowLmeFooter(showFooter.get());
+                 if("full".equals(lmeLegendDescLevel) && "yes".equals(showLmeLegend)){
                      if(rs.getString("ExchangeName").equals("XNYM6102") && tradeTypes.contains("REG")){
                          note = "THIS IS NOT AN LME REGISTERED CLIENT CONTRACT.";
                          r.setLmeTradeNote(note);
@@ -125,7 +127,8 @@ if(!"full".equals(summary))
 				 r.setCommissionAmount(new BigDecimal("0"));
 			 }
              if(!rs.getString("ExchangeName").equals("XNYM6102")){
-                 r.setShowLmeFooter(false);
+                 r.setShowLmeFooter(showFooter.get());
+                 System.out.println("after:"+showFooter.get());
                  r.setShowLmeTradeNote(false);
              }
 			return r;
