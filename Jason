@@ -131,14 +131,15 @@ public Stream<SDMTrade> getDailyConfStatementConfirmationData(LocalDate business
                  String note = "";
                  if(!showFooter.get())
                  {
-                     if("default".equals(lmeLegendDescLevel) && "yes".equals(showLmeLegend)){
+                     if(("default".equals(lmeLegendDescLevel) || "full".equals(lmeLegendDescLevel)) && "yes".equals(showLmeLegend)){
                          if(rs.getString("ExchangeName").equals("XNYM6102")){
                              showFooter.set(true);
-                             System.out.println("before:"+showFooter.get());
+                             r.setShowLmeFooter(showFooter.get());
+                             r.setShowLmeTradeNote(false);
                          }
                      }
                  }
-                 r.setShowLmeFooter(showFooter.get());
+
                  if("full".equals(lmeLegendDescLevel) && "yes".equals(showLmeLegend)){
                      if(rs.getString("ExchangeName").equals("XNYM6102") && tradeTypes.contains("REG")){
                          note = "THIS IS NOT AN LME REGISTERED CLIENT CONTRACT.";
@@ -156,9 +157,8 @@ public Stream<SDMTrade> getDailyConfStatementConfirmationData(LocalDate business
 			 if("counterPartyAccount".equals(reportingLevel)) {
 				 r.setCommissionAmount(new BigDecimal("0"));
 			 }
-             if(!rs.getString("ExchangeName").equals("XNYM6102")){
+             if(!"yes".equals(showLmeLegend) || rs.getString("ExchangeName").equals("XNYM6102")){
                  r.setShowLmeFooter(showFooter.get());
-                 System.out.println("after:"+showFooter.get());
                  r.setShowLmeTradeNote(false);
              }
 			return r;
