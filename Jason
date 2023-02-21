@@ -1,3 +1,94 @@
+Boolean showFooter = false;
+		return sq.toStream(new SQLQuery(SQLTransformer.transform(dbType, query), params), rs -> {
+			SDMTrade r = new SDMTrade();
+			r.setId(rs.getLong("tradeID"));
+			r.setInputID(rs.getLong("inputID"));
+			r.setReportingLevel(reportingLevel);
+			r.setInstrumentId(rs.getLong("instrumentId"));
+			r.setProductId(rs.getLong("productId"));
+			r.setActivityType(rs.getString("activityType"));
+			
+
+			r.setTradeDate(rs.getDate("tradeDate").toLocalDate());
+			r.setOrderId(rs.getString("orderId"));
+			
+			if ("BUY".equals(rs.getString("direction"))) {
+				r.setBuyQty(rs.getLong("quantity"));
+				r.setBuyQtyIntoTradePrice(
+						BigDecimal.valueOf(rs.getLong("quantity")).multiply(rs.getBigDecimal("price")));
+			} else {
+				r.setSellQty(rs.getLong("quantity"));
+				r.setSellQtyIntoTradePrice(
+						BigDecimal.valueOf(rs.getLong("quantity")).multiply(rs.getBigDecimal("price")));
+			}
+
+			String contractDesc = null;
+			if ("YES".equals(rs.getString("uselookalikeattribute"))) {
+				contractDesc = rs.getString("StatementDescription");
+			} else {
+				contractDesc = rs.getString("ExchangeName") + " " + rs.getString("Description");
+			}
+			contractDesc = contractDesc + " " + (rs.getInt("FLEXIBLE") == 1 ? rs.getString("MaturityDate")
+					: rs.getString("MonthMaturityDate"));
+
+			if ("OPTION".equals(rs.getString("productType"))) {
+				r.setInstrumentStrikePrice(rs.getBigDecimal("StrikePrice"));
+				contractDesc = contractDesc + " " + r.getFormattedInstrumentStrikePrice() + " "
+						+ rs.getString("optionType");
+			}
+
+			r.setContractDescription(contractDesc);
+			
+			r.setDisplayTradePrice(rs.getString("displayPrice"));
+
+			if (rs.getLong("RESULTOFEXERCISEASSIGNMENT") == 1) {
+				r.setResultOfEADesc("RESULT OF AN EXERCISE/ASSIGNMENT");
+			}
+			
+			if ("2_giveIn".equals(r.getActivityType())) {
+				r.setResultOfEADesc(rs.getString("sendingFirmDetails"));
+			}
+			r.setRegCategoryName(rs.getString("NAME"));
+
+			r.setCommissionCurrency(rs.getString("commissionCurrency"));
+
+			r.setOptionPremiumCurrency(rs.getString("optionPremiumCurrency"));
+			
+
+			r.setNfaFeeCurrency(rs.getString("nfaFeeCurrency"))
+					.setExchangeFeeCurrency(rs.getString("exchangeFeeCurrency"))
+					.setClearingFeeCurrency(rs.getString("clearingFeeCurrency"))
+					.setGiveInFeeCurrency(rs.getString("giveInFeeCurrency"))
+					.setBrokerageGiveUpFeeCurrency(rs.getString("brokerageGiveUpFeeCurrency"))
+					.setExchangeGiveUpFeeCurrency(rs.getString("exchangeGiveUpFeeCurrency"))
+					.setPitBrokerageFeeCurrency(rs.getString("pitBrokerageFeeCurrency"))
+					.setExecutionCommissionFeeCurrency(rs.getString("executionCommissionFeeCurrency"))
+					.setClearingCommissionFeeCurrency(rs.getString("clearingCommissionFeeCurrency"))
+					.setBrokerCommissionFeeCurrency(rs.getString("brokerCommissionFeeCurrency"));
+
+			BigDecimal mulFactor = new BigDecimal("-1");
+			double mulFactorDouble = 1.0;
+
+			if("4_cancelled".equals(r.getActivityType())){
+				mulFactor = mulFactor.multiply(mulFactor);
+				r.setBuyQtyIntoTradePrice(new BigDecimal("0"));
+				r.setSellQtyIntoTradePrice(new BigDecimal("0"));
+				
+				mulFactorDouble = mulFactorDouble*-1.0;
+			}
+			
+			r.setOptionPremiumAmount(rs.getDouble("value")*mulFactorDouble);
+			r.setCommissionAmount(rs.getBigDecimal("commissionAmount").multiply(mulFactor));
+			r.setSumNFAFeeAmount(rs.getBigDecimal("sumNFAFeeAmount").multiply(mulFactor))
+					.setSumExchangeFeeAmount(rs.getBigDecimal("sumexchangeFeeAmount").multiply(mulFactor))
+					.setSumClearingFee(rs.getBigDecimal("sumClearingFee").multiply(mulFactor))
+					.setSumGiveInFee(rs.getBigDecimal("sumGiveInFee").multiply(mulFactor))
+					.setSumBrokerageGiveUpAmountFee(rs.getBigDecimal("sumBrokerageGiveUpAmountFee").multiply(mulFactor))
+					.setSumExchangeGiveUpAmountFee(rs.getBigDecimal("sumExchangeGiveUpAmountFee").multiply(mulFactor))
+					.setSumPitBrokerageAmountFee(rs.getBigDecimal("sumPitBrokerageAmountFee").multiply(mulFactor))
+					.setSumExecutionCommissionAmountFee(rs.getBigDecimal("sumExecutionCommissionAmountFee").multiply(mulFactor))
+					.setSumClearingCommissionAmountFee(rs.getBigDecimal("sumClearingCommissionAmountFee").multiply(mulFactor))
+					.setSumBrokerCommissionAmountFee(rs.getBigDecimal("sumBrokerCommissionAmountFee").multiply(mulFactor));
 if(!"full".equals(summary))
              {
              	  String tradeTypeIds = rs.getString("trdTypes");
