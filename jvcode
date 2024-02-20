@@ -1,0 +1,11 @@
+		SQLStream sqlStream = new SQLStream(dataSource);
+		Stream<ReportData> data = sqlStream.toStream(new SQLQuery(sql.toString(), map), rs -> {
+			ReportData d = new ReportData();
+			d.setBusinessDate(rs.getDate("BUSINESSDATE") != null ? (rs.getDate("BUSINESSDATE").toLocalDate()) : null);
+			d.setCreation(rs.getTimestamp("CREATION") != null ? (rs.getTimestamp("CREATION").toInstant()) : null);
+			d.setFormat(rs.getString("FORMAT"));
+			d.setId(rs.getString("REPORT_ID"));
+			d.setName(rs.getString("NAME"));
+			d.setReportName(rs.getString("REPORTNAME"));
+			return d;
+		});
