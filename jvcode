@@ -11,20 +11,21 @@ Stream<ReportData> data = sqlStream.toStream(new SQLQuery(sql.toString(), map), 
     return d;
 });
 
-// Collect report data into a list
-List<ReportData> reportDataList = data.collect(Collectors.toList());
+// Collect report data into a map to track duplicates
+Map<String, ReportData> reportDataMap = new LinkedHashMap<>();
+data.forEach(reportData -> reportDataMap.merge(reportData.getReportName(), reportData, (existing, replacement) -> {
+    // Check backend condition only for duplicate entries
+    if (replacement.getBackend() == 1) {
+        return replacement;
+    }
+    return existing;
+}));
 
 // Filter unique report names based on the backend condition
-Set<String> uniqueReportNames = new HashSet<>();
-List<ReportData> uniqueReportData = new ArrayList<>();
-for (ReportData reportData : reportDataList) {
-    if (!uniqueReportNames.contains(reportData.getReportName())) {
-        uniqueReportNames.add(reportData.getReportName());
-        if (reportData.getBackend() == 1) {
-            uniqueReportData.add(reportData);
-        }
-    }
-}
+List<ReportData> uniqueReportData = reportDataMap.values()
+        .stream()
+        .filter(reportData -> reportData.getBackend() == 1)
+        .collect(Collectors.toList());
 
 // Count the total unique report names satisfying the condition
 int total = uniqueReportData.size();
