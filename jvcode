@@ -1,54 +1,18 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+SQLStream sqlStream = new SQLStream(dataSource);
+		Stream<ReportData> data = sqlStream.toStream(new SQLQuery(sql.toString(), map), rs -> {
+			ReportData d = new ReportData();
+			d.setBusinessDate(rs.getDate("BUSINESSDATE") != null ? (rs.getDate("BUSINESSDATE").toLocalDate()) : null);
+			d.setCreation(rs.getTimestamp("CREATION") != null ? (rs.getTimestamp("CREATION").toInstant()) : null);
+			d.setFormat(rs.getString("FORMAT"));
+			d.setId(rs.getString("REPORT_ID"));
+			d.setName(rs.getString("NAME"));
+			d.setReportName(rs.getString("REPORTNAME"));
+			d.setBackend(rs.getInt("BACKEND"));
+			return d;
+		});
 
-// Assuming ReportData class definition
-class ReportData {
-    private String name;
-    private int backend;
+		Stream<Integer> count =
+			sqlStream.toStream(new SQLQuery(sqlCnt.toString(), map), rs -> rs.getInt(1));
 
-    // Constructor, getters, and setters
-}
-
-// Your existing code
-public class Main {
-    public static void main(String[] args) {
-        // Original list of ReportData objects
-        List<ReportData> originalList = /* your original list */;
-        
-        // New list to store filtered items
-        List<ReportData> filteredList = new ArrayList<>();
-        
-        // Map to store names and corresponding backend values
-        Map<String, Integer> nameBackendMap = new HashMap<>();
-        
-        for (ReportData item : originalList) {
-            String name = item.getName();
-            int backend = item.getBackend();
-            
-            // Check if name already exists
-            if (nameBackendMap.containsKey(name)) {
-                // Duplicate name found
-                if (backend == 1) {
-                    // Replace the existing item with backend == 0 with backend == 1
-                    if (nameBackendMap.get(name) == 0) {
-                        filteredList.removeIf(existingItem -> existingItem.getName().equals(name) && existingItem.getBackend() == 0);
-                        filteredList.add(item);
-                        nameBackendMap.put(name, backend);
-                    }
-                }
-            } else {
-                // New name encountered
-                // Add to the map
-                nameBackendMap.put(name, backend);
-                // Add items with backend == 0
-                if (backend == 0) {
-                    filteredList.add(item);
-                }
-            }
-        }
-        
-        // At this point, filteredList contains the desired items
-    }
-}
+		int total = count.collect(Collectors.toList()).get(0);
+		List<ReportData> reportData = data.collect(Collectors.toList());
