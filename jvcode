@@ -11,15 +11,20 @@ Stream<ReportData> data = sqlStream.toStream(new SQLQuery(sql.toString(), map), 
     return d;
 });
 
+// Collect report data into a list
+List<ReportData> reportDataList = data.collect(Collectors.toList());
+
 // Filter unique report names based on the backend condition
-List<ReportData> uniqueReportData = data
-        .collect(Collectors.toMap(ReportData::getReportName, Function.identity(), 
-                                  (existing, replacement) -> 
-                                      existing.getBackend() == 1 ? existing : replacement))
-        .values()
-        .stream()
-        .filter(reportData -> reportData.getBackend() == 1)
-        .collect(Collectors.toList());
+Set<String> uniqueReportNames = new HashSet<>();
+List<ReportData> uniqueReportData = new ArrayList<>();
+for (ReportData reportData : reportDataList) {
+    if (!uniqueReportNames.contains(reportData.getReportName())) {
+        uniqueReportNames.add(reportData.getReportName());
+        if (reportData.getBackend() == 1) {
+            uniqueReportData.add(reportData);
+        }
+    }
+}
 
 // Count the total unique report names satisfying the condition
 int total = uniqueReportData.size();
