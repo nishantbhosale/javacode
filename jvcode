@@ -1,33 +1,38 @@
 SQLStream sqlStream = new SQLStream(dataSource);
-Stream<ReportData> data = sqlStream.toStream(new SQLQuery(sql.toString(), map), rs -> {
-    ReportData d = new ReportData();
-    d.setBusinessDate(rs.getDate("BUSINESSDATE") != null ? rs.getDate("BUSINESSDATE").toLocalDate() : null);
-    d.setCreation(rs.getTimestamp("CREATION") != null ? rs.getTimestamp("CREATION").toInstant() : null);
-    d.setFormat(rs.getString("FORMAT"));
-    d.setId(rs.getString("REPORT_ID"));
-    d.setName(rs.getString("NAME"));
-    d.setReportName(rs.getString("REPORTNAME"));
-    d.setBackend(rs.getInt("BACKEND"));
-    return d;
-});
+		Stream<ReportData> data = sqlStream.toStream(new SQLQuery(sql.toString(), map), rs -> {
+			ReportData d = new ReportData();
+			d.setBusinessDate(rs.getDate("BUSINESSDATE") != null ? (rs.getDate("BUSINESSDATE").toLocalDate()) : null);
+			d.setCreation(rs.getTimestamp("CREATION") != null ? (rs.getTimestamp("CREATION").toInstant()) : null);
+			d.setFormat(rs.getString("FORMAT"));
+			d.setId(rs.getString("REPORT_ID"));
+			d.setName(rs.getString("NAME"));
+			d.setReportName(rs.getString("REPORTNAME"));
+			d.setBackend(rs.getInt("BACKEND"));
+			return d;
+		});
 
-// Collect report data into a map to track duplicates
-Map<String, ReportData> reportDataMap = new LinkedHashMap<>();
-data.forEach(reportData -> reportDataMap.merge(reportData.getReportName(), reportData, (existing, replacement) -> {
-    // Check backend condition only for duplicate entries
-    if (replacement.getBackend() == 1) {
-        return replacement;
-    }
-    return existing;
-}));
+		Stream<Integer> count =
+			sqlStream.toStream(new SQLQuery(sqlCnt.toString(), map), rs -> rs.getInt(1));
 
-// Filter unique report names based on the backend condition
-List<ReportData> uniqueReportData = reportDataMap.values()
-        .stream()
-        .filter(reportData -> reportData.getBackend() == 1)
-        .collect(Collectors.toList());
+		int total = count.collect(Collectors.toList()).get(0);
+		List<ReportData> reportData = data.collect(Collectors.toList());
+
+			Map<String, ReportData> reportDataMap = new LinkedHashMap<>();
+			data.forEach(reportFeild -> reportDataMap.merge(reportFeild.getReportName(), reportFeild, (existing, replacement) -> {
+				if (replacement.getBackend() == 1) {
+					return replacement;
+				}
+				return existing;
+			}));
+			List<ReportData> uniqueReportData = reportDataMap.values()
+					.stream()
+					.filter(reportFeild -> reportFeild.getBackend() == 1)
+					.collect(Collectors.toList());
 
 // Count the total unique report names satisfying the condition
-int total = uniqueReportData.size();
-
-return new ReportDataResult(total, uniqueReportData);
+			int totalUnique = uniqueReportData.size();
+			logger.info("Inside MDMRS ");
+			logger.info(String.valueOf(_templateEntity));
+			logger.info(String.valueOf(_reportEntity));
+			logger.info(String.valueOf(_repositoryEntity));
+			return new ReportDataResult(totalUnique, uniqueReportData);
